@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="es-CO">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>¿Sí o No?</title>
+  <meta name="description" content="Juego de sí o no con voz para niñas y niños que todavía no leen.">
+  <meta name="theme-color" content="#EAF1FF" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#16112A" media="(prefers-color-scheme: dark)">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&display=swap">
+  <link rel="stylesheet" href="css/estilos.css">
+</head>
+<body data-pantalla="menu">
+  <header class="barra">
+    <button type="button" class="btn btn-icono" id="btn-inicio" aria-label="Volver a los mundos">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 11.5 12 4l9 7.5"/><path d="M5.5 10v9.5h5v-5.5h3v5.5h5V10"/></svg>
+    </button>
+    <button type="button" class="btn btn-icono" id="btn-reiniciar" aria-label="Empezar otra ronda en este mundo" disabled>
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12a8 8 0 1 0 2.4-5.7"/><path d="M4 4v5h5"/></svg>
+    </button>
+    <p class="contador" aria-label="Estrellas ganadas">
+      <span class="contador-icono" aria-hidden="true">⭐</span>
+      <span id="total-estrellas">0</span>
+    </p>
+  </header>
+
+  <main>
+    <!-- Menú de mundos -->
+    <section class="pantalla menu" id="menu" aria-labelledby="titulo-juego">
+      <h1 class="titulo" id="titulo-juego">
+        <span class="titulo-si">¿Sí</span>
+        <span class="titulo-o">o</span>
+        <span class="titulo-no">No?</span>
+      </h1>
+      <ul class="mundos" id="lista-mundos"></ul>
+
+      <details class="adultos" id="adultos">
+        <summary>Para adultos</summary>
+        <div class="adultos-cuerpo">
+          <p class="adultos-total" id="adultos-total"></p>
+          <ul class="adultos-lista" id="adultos-lista"></ul>
+          <p class="adultos-nota">El historial se guarda solo en este navegador.</p>
+          <button type="button" class="enlace" id="btn-borrar">Borrar historial</button>
+          <div class="confirmar" id="confirmar" role="group" aria-labelledby="confirmar-texto" hidden>
+            <p id="confirmar-texto">¿Borrar todas las preguntas vistas, las que faltan por repasar y las estrellas?</p>
+            <div class="confirmar-botones">
+              <button type="button" class="btn btn-peligro" id="btn-borrar-si">Sí, borrar</button>
+              <button type="button" class="btn btn-suave" id="btn-borrar-no">Cancelar</button>
+            </div>
+          </div>
+          <p class="adultos-aviso" id="borrado-ok" role="status"></p>
+        </div>
+      </details>
+    </section>
+
+    <!-- Pregunta -->
+    <section class="pantalla juego" id="juego" aria-label="Pregunta" hidden>
+      <ol class="progreso" id="progreso" aria-label="Progreso de la ronda"></ol>
+
+      <article class="tarjeta" id="tarjeta">
+        <p class="repaso" id="repaso" hidden><span aria-hidden="true">🔁</span> ¡Otra oportunidad!</p>
+        <div class="visual" id="visual" aria-hidden="true"></div>
+        <h2 class="pregunta" id="pregunta" tabindex="-1"></h2>
+        <button type="button" class="btn btn-escuchar" id="btn-escuchar">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9.5h3.5L12 5.5v13l-4.5-4H4z"/><path d="M15.5 9a4 4 0 0 1 0 6"/><path d="M18 6.5a7.5 7.5 0 0 1 0 11"/></svg>
+          Escuchar
+        </button>
+      </article>
+
+      <div class="zona-respuesta">
+        <div class="respuestas" id="respuestas">
+          <button type="button" class="btn btn-respuesta btn-si" id="btn-si" aria-label="Sí">
+            <span class="marca" aria-hidden="true">✓</span><span>SÍ</span>
+          </button>
+          <button type="button" class="btn btn-respuesta btn-no" id="btn-no" aria-label="No">
+            <span class="marca" aria-hidden="true">✗</span><span>NO</span>
+          </button>
+        </div>
+
+        <div class="retro" id="retro" hidden>
+          <p class="retro-titulo" id="retro-titulo"></p>
+          <p class="retro-respuesta" id="retro-respuesta" hidden></p>
+          <p class="retro-why" id="retro-why"></p>
+          <button type="button" class="btn btn-siguiente" id="btn-siguiente">
+            Siguiente
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h13"/><path d="m13 6 6 6-6 6"/></svg>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Fin de ronda -->
+    <section class="pantalla final" id="final" aria-labelledby="final-titulo" hidden>
+      <div class="tarjeta tarjeta-final">
+        <p class="final-mundo" id="final-mundo"></p>
+        <h2 class="final-titulo" id="final-titulo" tabindex="-1"></h2>
+        <ol class="final-estrellas" id="final-estrellas" aria-hidden="true"></ol>
+        <p class="final-texto" id="final-texto"></p>
+        <div class="final-botones">
+          <button type="button" class="btn btn-siguiente" id="btn-siguiente-mundo">
+            <span class="final-emoji" id="siguiente-emoji" aria-hidden="true"></span>
+            Siguiente mundo
+          </button>
+          <button type="button" class="btn btn-suave" id="btn-mundos">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="4" width="6.5" height="6.5" rx="2"/><rect x="13.5" y="4" width="6.5" height="6.5" rx="2"/><rect x="4" y="13.5" width="6.5" height="6.5" rx="2"/><rect x="13.5" y="13.5" width="6.5" height="6.5" rx="2"/></svg>
+            Mundos
+          </button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <div class="confeti" id="confeti" aria-hidden="true"></div>
+  <p class="solo-lector" id="anuncio" aria-live="polite"></p>
+
+  <script src="js/bancos.js"></script>
+  <script src="js/matematicas.js"></script>
+  <script src="js/juego.js"></script>
+</body>
+</html>
