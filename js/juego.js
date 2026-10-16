@@ -25,7 +25,7 @@
     inicio: $('btn-inicio'), reiniciar: $('btn-reiniciar'), estrellas: $('total-estrellas'),
     listaMundos: $('lista-mundos'),
     progreso: $('progreso'), tarjeta: $('tarjeta'), repaso: $('repaso'), visual: $('visual'),
-    pregunta: $('pregunta'), escuchar: $('btn-escuchar'),
+    pregunta: $('pregunta'), escuchar: $('btn-escuchar'), escucharRetro: $('btn-escuchar-retro'),
     respuestas: $('respuestas'), si: $('btn-si'), no: $('btn-no'),
     retro: $('retro'), retroTitulo: $('retro-titulo'), retroRespuesta: $('retro-respuesta'),
     retroWhy: $('retro-why'), siguiente: $('btn-siguiente'),
@@ -126,6 +126,7 @@
     } catch (e) { /* algunos navegadores no tienen el evento */ }
   } else {
     el.escuchar.hidden = true;
+    el.escucharRetro.hidden = true;
   }
 
   function callar() {
@@ -257,6 +258,7 @@
   }
 
   function mostrar(nombre) {
+    delete document.body.dataset.respondida;
     document.body.dataset.pantalla = nombre;
     Object.keys(el.pantallas).forEach(function (k) { el.pantallas[k].hidden = k !== nombre; });
     window.scrollTo(0, 0);
@@ -267,6 +269,8 @@
   function mostrarPregunta() {
     var p = actual();
     partida.respondida = false;
+    delete document.body.dataset.respondida;
+    window.scrollTo(0, 0);
     el.tarjeta.classList.remove('fallo');
     el.repaso.hidden = !p.repaso;
     el.visual.replaceChildren(crearVisual(p));
@@ -471,6 +475,7 @@
     el.retroWhy.textContent = p.why;
     el.respuestas.hidden = true;
     el.retro.hidden = false;
+    document.body.dataset.respondida = '1';
 
     if (acierto) {
       tono([660, 880, 1175]);
@@ -487,6 +492,8 @@
     el.anuncio.textContent = dicho;
     hablar(dicho);
     el.siguiente.focus({ preventScroll: true });
+    // En pantallas bajitas, bajar hasta que Siguiente quede a la vista.
+    el.retro.scrollIntoView({ block: 'end', behavior: menosMovimiento() ? 'auto' : 'smooth' });
   }
 
   function siguiente() {
@@ -609,6 +616,7 @@
   el.si.addEventListener('click', function () { responder(true); });
   el.no.addEventListener('click', function () { responder(false); });
   el.siguiente.addEventListener('click', siguiente);
+  el.escucharRetro.addEventListener('click', function () { hablar(el.anuncio.textContent); });
   el.escuchar.addEventListener('click', function () {
     if (!partida) return;
     if (partida.respondida) hablar(el.anuncio.textContent);
